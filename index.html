@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Gl1tch Composition</title><style>body, html { margin: 0; padding: 0; background-color: black; }#container { position: relative; overflow: hidden; aspect-ratio: 1 / 1; width: 100vmin; max-width: 1000px; margin: 0 auto; }.layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }.iframe-layer { display: none; }.iframe-layer.active { display: block; }.iframe-layer iframe { pointer-events: none; }#container { cursor: pointer; }</style></head><body><div id="container"><div class="layer iframe-layer active"><iframe src="https://ordinals.com/content/60ee1a7e10109c5c9374d9fc8c31bbfeb972b3c97ea1664aeb1903e32f815f4di0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; filter: hue-rotate(242deg) saturate(93%) contrast(47%); opacity: 1; mix-blend-mode: color-burn; border: none;"></iframe></div>
+<div class="layer"><img src="wizzie.webp" alt="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; filter: hue-rotate(0deg) saturate(100%) contrast(100%); opacity: 1; mix-blend-mode: normal; object-fit: contain;" /></div></div><script>
+var iframeLayers = Array.from(document.querySelectorAll('.iframe-layer'));
+var probabilities = [100];
+function selectIframeByProbability() {
+  var path = window.location.pathname;
+  var contentIndex = path.indexOf("/content/");
+  var inscriptionId = contentIndex !== -1 ? path.slice(contentIndex + 9) : null;
+  var seed;
+  if (inscriptionId) {
+    seed = shift_hash(inscriptionId);
+  } else {
+    seed = Math.floor(Math.random() * 1400000000);
+  }
+  var rand = seed / 1400000000;
+  var cumulativeProbability = 0;
+  for (var i = 0; i < probabilities.length; i++) {
+    cumulativeProbability += probabilities[i];
+    if (rand * 100 < cumulativeProbability) {
+      iframeLayers.forEach(layer => layer.classList.remove('active'));
+      iframeLayers[i].classList.add('active');
+      break;
+    }
+  }
+}
+function shift_hash(inscription_id) {
+  var b = inscription_id;
+  var intshift = parseInt(b.split("i")[1]);
+  var barr = b.split("");
+  for (let v = 0; v < intshift; v++) {
+    var newb = barr.shift();
+    barr.push(newb);
+  }
+  b = barr.join("");
+  const maxValue = 1400000000;
+  let hash = 0;
+  const prime = 31;
+  for (let i = 0; i < b.length; i++) {
+    hash = (hash * prime + b.charCodeAt(i)) % Number.MAX_SAFE_INTEGER;
+  }
+  return hash % maxValue;
+}
+window.addEventListener("load", selectIframeByProbability);
+</script></body></html>
